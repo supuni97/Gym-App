@@ -1,23 +1,28 @@
 import React from 'react';
-import { Box, Stack, Typography } from '@mui/material';
-import Icon from '../assets/icons/gym.png';
+import { Stack, Typography } from '@mui/material';
 
-const BodyPart = ({item, bodyPart, setBodyPart}) => {
+const BodyPart = ({ item, bodyPart, setBodyPart, imageUrl }) => {
   return (
     <Stack 
-     type="button"
-    alignItems="center"
-    justifyContent="center"
-    className="bodyPart-card"
-    sx={bodyPart === item ? { 
+      type="button"
+      alignItems="center"
+      justifyContent="center"
+      className="bodyPart-card"
+      sx={bodyPart === item ? { 
         borderTop: '4px solid #FF2625', 
         background: '#fff', borderBottomLeftRadius: '20px', width: '270px', height: '282px', cursor: 'pointer', gap: '47px' } : { background: '#fff', borderBottomLeftRadius: '20px', width: '270px', height: '282px', cursor: 'pointer', gap: '47px' }}
+      onClick={() => setBodyPart(item)}
     >
-   
-   <img src={Icon} alt="dumbbell" style={{ width: '40px', height: '40px' }} />
- <Typography fontSize="24px" fontWeight="bold" color="#3A1212" >{item}</Typography>
-  </Stack>
-  )
-}
+      <img src={imageUrl} alt={item} style={{ width: '80vw',
+             height:'160px',
+             width:'160px',
+              objectFit: 'cover',
+              }} />
+      <Typography fontSize="24px" fontWeight="bold" color="#3A1212" textTransform="capitalize">
+        {item}
+      </Typography>
+    </Stack>
+  );
+};
 
-export default BodyPart
+export default BodyPart;

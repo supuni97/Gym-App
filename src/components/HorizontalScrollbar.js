@@ -1,5 +1,5 @@
-import React, {useContext} from 'react';
-import { Box,Typography } from '@mui/material';
+import React, { useContext } from 'react';
+import { Box, Typography } from '@mui/material';
 import BodyPart from './BodyPart';
 import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu';
 import RightArrowIcon from '../assets/icons/right-arrow.png';
@@ -9,8 +9,8 @@ const LeftArrow = () => {
   const { scrollPrev } = useContext(VisibilityContext);
 
   return (
-    <Typography onClick={() => scrollPrev()} className="right-arrow">
-      <img src={LeftArrowIcon} alt="right-arrow" />
+    <Typography onClick={() => scrollPrev()} className="left-arrow">
+      <img src={LeftArrowIcon} alt="left-arrow" />
     </Typography>
   );
 };
@@ -19,29 +19,34 @@ const RightArrow = () => {
   const { scrollNext } = useContext(VisibilityContext);
 
   return (
-    <Typography onClick={() => scrollNext()} className="left-arrow">
+    <Typography onClick={() => scrollNext()} className="right-arrow">
       <img src={RightArrowIcon} alt="right-arrow" />
     </Typography>
   );
 };
 
+const HorizontalScrollbar = ({ data = [], bodyPart, setBodyPart }) => {
+  if (!data || data.length === 0) return null;
 
-const HorizontalScrollbar = ({ data , bodyPart, setBodyPart}) => {
   return (
-    <ScrollMenu>
+    <ScrollMenu LeftArrow={LeftArrow} RightArrow={RightArrow}>
       {data.map((item) => (
         <Box
-          key={item.id || item}
-          itemId={item.id || item}
-          title={item.id || item}
+          key={item.id}
+          itemId={item.id}
+          title={item.id}
           margin="0 40px"
         >
-          <BodyPart item={item} bodyPart={bodyPart} setBodyPart={setBodyPart} />
+          <BodyPart 
+            item={item.id} 
+            bodyPart={bodyPart} 
+            setBodyPart={setBodyPart} 
+            imageUrl={item.imageUrl} 
+          />
         </Box>
-      )
-      )}
+      ))}
     </ScrollMenu>
-  )
-}
+  );
+};
 
-export default HorizontalScrollbar
+export default HorizontalScrollbar;

@@ -1,8 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Stack, TextField, Typography } from '@mui/material';
-
 import { exerciseOptions, fetchData } from '../utils/fetchData';
 import HorizontalScrollbar from './HorizontalScrollbar';
+
+import allIcon from '../assets/images/fullbody.jpeg';
+import uarmsIcon from '../assets/images/uarm.jpeg';
+import ulegIcon from '../assets/images/uleg.jpeg';
+import larmIcon from '../assets/images/larm.jpeg';
+import llegIcon from '../assets/images/lleg.jpeg';
+import cardioIcon from '../assets/images/cardio.jpeg';
+import neckIcon from '../assets/images/neck.jpeg';
+import shouldersIcon from '../assets/images/shoulder.jpeg';
+import waistIcon from '../assets/images/waist.jpeg';
+import backIcon from '../assets/images/back.jpeg';
+import chestIcon from '../assets/images/chest.jpeg';
+
+
+const bodyPartImages = {
+  all: allIcon,
+  'upper arms': uarmsIcon,
+  back: backIcon,
+  chest: chestIcon,
+  'upper legs': ulegIcon,
+  'lower legs':llegIcon,
+  'lower arms':larmIcon,
+  cardio:cardioIcon,
+  neck:neckIcon,
+  waist:waistIcon,
+  shoulders: shouldersIcon,
+};
 
 const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
   const [search, setSearch] = useState('');
@@ -10,29 +36,47 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
 
   useEffect(() => {
     const fetchExercisesData = async () => {
-      const bodyPartsData = await fetchData('https://exercisedb.p.rapidapi.com/exercises/bodyPartList', exerciseOptions);
+      try {
+        const bodyPartsData = await fetchData('https://exercisedb.p.rapidapi.com/exercises/bodyPartList', exerciseOptions);
 
-      setBodyParts(['all', ...bodyPartsData]);
+        // Map the fetched body parts to include their image URLs
+        const bodyPartsWithImages = ['all', ...bodyPartsData].map((part) => ({
+          id: part,
+          imageUrl: bodyPartImages[part] || 'path/to/default.png', // Provide a default image URL if not found
+        }));
+
+        setBodyParts(bodyPartsWithImages);
+        console.log(bodyPartsWithImages); // Log the array to verify its contents
+      } catch (error) {
+        console.error('Failed to fetch body parts data:', error);
+      }
     };
 
     fetchExercisesData();
   }, []);
 
+
+
+  
   const handleSearch = async () => {
     if (search) {
-      const exercisesData = await fetchData('https://exercisedb.p.rapidapi.com/exercises', exerciseOptions);
+      try {
+        const exercisesData = await fetchData('https://exercisedb.p.rapidapi.com/exercises', exerciseOptions);
 
-      const searchedExercises = exercisesData.filter(
-        (item) => item.name.toLowerCase().includes(search)
-               || item.target.toLowerCase().includes(search)
-               || item.equipment.toLowerCase().includes(search)
-               || item.bodyPart.toLowerCase().includes(search),
-      );
+        const searchedExercises = exercisesData.filter(
+          (item) => item.name.toLowerCase().includes(search)
+                 || item.target.toLowerCase().includes(search)
+                 || item.equipment.toLowerCase().includes(search)
+                 || item.bodyPart.toLowerCase().includes(search),
+        );
 
-      window.scrollTo({ top: 1800, left: 100, behavior: 'smooth' });
+        window.scrollTo({ top: 1800, left: 100, behavior: 'smooth' });
 
-      setSearch('');
-      setExercises(searchedExercises);
+        setSearch('');
+        setExercises(searchedExercises);
+      } catch (error) {
+        console.error('Failed to fetch exercises data:', error);
+      }
     }
   };
 
@@ -55,7 +99,7 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
         </Button>
       </Box>
       <Box sx={{ position: 'relative', width: '100%', p: '20px' }}>
-        <HorizontalScrollbar data={bodyParts} bodyParts setBodyPart={setBodyPart} bodyPart={bodyPart} />
+        <HorizontalScrollbar data={bodyParts} setBodyPart={setBodyPart} bodyPart={bodyPart} />
       </Box>
     </Stack>
   );
