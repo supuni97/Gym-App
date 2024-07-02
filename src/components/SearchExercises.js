@@ -15,18 +15,17 @@ import waistIcon from '../assets/images/waist.jpeg';
 import backIcon from '../assets/images/back.jpeg';
 import chestIcon from '../assets/images/chest.jpeg';
 
-
 const bodyPartImages = {
   all: allIcon,
   'upper arms': uarmsIcon,
   back: backIcon,
   chest: chestIcon,
   'upper legs': ulegIcon,
-  'lower legs':llegIcon,
-  'lower arms':larmIcon,
-  cardio:cardioIcon,
-  neck:neckIcon,
-  waist:waistIcon,
+  'lower legs': llegIcon,
+  'lower arms': larmIcon,
+  cardio: cardioIcon,
+  neck: neckIcon,
+  waist: waistIcon,
   shoulders: shouldersIcon,
 };
 
@@ -38,15 +37,22 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
     const fetchExercisesData = async () => {
       try {
         const bodyPartsData = await fetchData('https://exercisedb.p.rapidapi.com/exercises/bodyPartList', exerciseOptions);
+        
+        if (bodyPartsData) {
+          // Log fetched data
+          console.log('Fetched body parts data:', bodyPartsData);
+          
+          // Map the fetched body parts to include their image URLs
+          const bodyPartsWithImages = ['all', ...bodyPartsData].map((part) => ({
+            id: part,
+            imageUrl: bodyPartImages[part] || 'path/to/default.png', // Provide a default image URL if not found
+          }));
 
-        // Map the fetched body parts to include their image URLs
-        const bodyPartsWithImages = ['all', ...bodyPartsData].map((part) => ({
-          id: part,
-          imageUrl: bodyPartImages[part] || 'path/to/default.png', // Provide a default image URL if not found
-        }));
-
-        setBodyParts(bodyPartsWithImages);
-        console.log(bodyPartsWithImages); // Log the array to verify its contents
+          setBodyParts(bodyPartsWithImages);
+          console.log('Body parts with images:', bodyPartsWithImages); // Log the array to verify its contents
+        } else {
+          console.error('Body parts data is undefined');
+        }
       } catch (error) {
         console.error('Failed to fetch body parts data:', error);
       }
@@ -55,9 +61,6 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
     fetchExercisesData();
   }, []);
 
-
-
-  
   const handleSearch = async () => {
     if (search) {
       try {
